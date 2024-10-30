@@ -39,24 +39,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Long productId, Product updatedProduct) {
-        Product existingProduct = products.stream()
-                .filter(details -> details.getId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> {
-                    log.info("Product with id {} not found in mock", productId);
-                    return new ProductNotFoundException(productId);
-                });
+        Product existingProduct = getProductById(productId);
 
-        log.info("Product with id {} updated successfully", productId);
-        products.set(products.indexOf(existingProduct), updatedProduct);
-
-        return Product.builder()
+        existingProduct = Product.builder()
+                .id(existingProduct.getId())
                 .categoryId(updatedProduct.getCategoryId() != null ? updatedProduct.getCategoryId() : existingProduct.getCategoryId())
                 .productName(updatedProduct.getProductName() != null ? updatedProduct.getProductName() : existingProduct.getProductName())
                 .description(updatedProduct.getDescription() != null ? updatedProduct.getDescription() : existingProduct.getDescription())
                 .price(updatedProduct.getPrice() != null ? updatedProduct.getPrice() : existingProduct.getPrice())
                 .quantity(updatedProduct.getQuantity() >= 0 ? updatedProduct.getQuantity() : existingProduct.getQuantity())
                 .build();
+
+        log.info("Product with id {} updated successfully", productId);
+        return existingProduct;
     }
 
     @Override

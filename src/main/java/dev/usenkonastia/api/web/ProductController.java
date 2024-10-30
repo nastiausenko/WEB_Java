@@ -33,8 +33,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
-        Product createdProduct = productService.createProduct(product);
-        return ResponseEntity.ok(productMapper.toProductDto(createdProduct));
+        return ResponseEntity.ok(productMapper.toProductDto(productService.createProduct(product)));
     }
 
     @PutMapping("/{id}")
