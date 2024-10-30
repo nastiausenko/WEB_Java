@@ -1,5 +1,6 @@
 package dev.usenkonastia.api.web;
 
+import dev.usenkonastia.api.service.exception.CategoryNotFoundException;
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
@@ -20,6 +21,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
         problemDetail.setType(create("product-not-found"));
         problemDetail.setTitle("Product Not Found");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    ProblemDetail handleCategoryNotFound(CategoryNotFoundException ex) {
+        log.info("Category Not Found exception raised");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("category-not-found"));
+        problemDetail.setTitle("Category Not Found");
         return problemDetail;
     }
 }
