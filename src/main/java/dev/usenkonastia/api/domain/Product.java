@@ -1,11 +1,13 @@
-package dev.usenkonastia.api.domain.product;
+package dev.usenkonastia.api.domain;
 
 import lombok.*;
+
+import java.util.UUID;
 
 @Value
 @Builder
 public class Product {
-    Long id;
+    UUID id;
     String categoryId;
     String productName;
     String description;

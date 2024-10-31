@@ -1,6 +1,6 @@
 package dev.usenkonastia.api.service.mapper;
 
-import dev.usenkonastia.api.domain.product.Product;
+import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.dto.product.ProductDto;
 import dev.usenkonastia.api.dto.product.ProductEntryDto;
 import dev.usenkonastia.api.dto.product.ProductListDto;
