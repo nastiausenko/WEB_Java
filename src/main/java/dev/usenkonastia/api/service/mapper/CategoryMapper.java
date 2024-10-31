@@ -1,6 +1,6 @@
 package dev.usenkonastia.api.service.mapper;
 
-import dev.usenkonastia.api.domain.category.Category;
+import dev.usenkonastia.api.domain.Category;
 import dev.usenkonastia.api.dto.category.CategoryDto;
 import dev.usenkonastia.api.dto.category.CategoryEntryDto;
 import dev.usenkonastia.api.dto.category.CategoryListDto;

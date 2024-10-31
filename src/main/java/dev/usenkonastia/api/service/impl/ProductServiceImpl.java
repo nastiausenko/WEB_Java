@@ -18,7 +18,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-        try {
             Product newProduct = Product.builder()
                     .id(UUID.randomUUID())
                     .categoryId(product.getCategoryId())
@@ -29,9 +28,6 @@ public class ProductServiceImpl implements ProductService {
                     .build();
             products.add(newProduct);
             return newProduct;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e); //TODO exception
-        }
     }
 
     @Override
@@ -47,7 +43,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(UUID productId, Product updatedProduct) {
-        try {
             Product existingProduct = getProductById(productId);
 
             Product updatedExistingProduct = Product.builder()
@@ -62,9 +57,6 @@ public class ProductServiceImpl implements ProductService {
             log.info("Product with id {} updated successfully", productId);
             products.set(products.indexOf(existingProduct), updatedExistingProduct);
             return updatedExistingProduct;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e); //TODO exception
-        }
     }
 
     @Override
