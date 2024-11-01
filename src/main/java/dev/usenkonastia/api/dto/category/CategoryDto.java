@@ -2,7 +2,9 @@ package dev.usenkonastia.api.dto.category;
 
 
 import dev.usenkonastia.api.dto.product.ProductDto;
-import jakarta.validation.constraints.NotNull;
+import dev.usenkonastia.api.dto.validation.CosmicWordCheck;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -13,7 +15,9 @@ import java.util.List;
 @Builder
 @Jacksonized
 public class CategoryDto {
-    @NotNull(message = "Category name cannot be null")
+    @CosmicWordCheck
+    @Size(max = 100, message = "Name cannot exceed 100 characters")
+    @NotBlank(message = "Category name cannot be null")
     String categoryName;
 
     List<ProductDto> products;

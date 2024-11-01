@@ -67,17 +67,17 @@ public class CategoryServiceImpl implements CategoryService {
         return List.of(
                 Category.builder()
                         .id(UUID.randomUUID())
-                        .name("Космічні іграшки")
+                        .name("Galaxy Toys")
                         .products(new ArrayList<>())
                         .build(),
                 Category.builder()
                         .id(UUID.randomUUID())
-                        .name("Космічна їжа")
+                        .name("Space Food")
                         .products(new ArrayList<>())
                         .build(),
                 Category.builder()
                         .id(UUID.randomUUID())
-                        .name("Космічні костюми")
+                        .name("Astronaut Suits")
                         .products(new ArrayList<>())
                         .build()
         );
