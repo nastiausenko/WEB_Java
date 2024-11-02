@@ -1,13 +1,11 @@
 package dev.usenkonastia.api.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.usenkonastia.api.config.MappersTestConfiguration;
 import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.dto.product.ProductDto;
 import dev.usenkonastia.api.dto.product.ProductEntryDto;
 import dev.usenkonastia.api.dto.product.ProductListDto;
 import dev.usenkonastia.api.service.ProductService;
-
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("Product Controller Tests")
-@Import(MappersTestConfiguration.class)
 public class ProductControllerIT {
     private static final UUID PRODUCT_ID = UUID.randomUUID();
     private final ProductListDto productListDto = buildProductListDto();

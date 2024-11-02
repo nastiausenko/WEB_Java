@@ -1,21 +1,15 @@
 package dev.usenkonastia.api.service;
 
-
-import dev.usenkonastia.api.config.MappersTestConfiguration;
 import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
 import dev.usenkonastia.api.service.impl.ProductServiceImpl;
-import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Product Service Tests")
 @SpringBootTest(classes = ProductServiceImpl.class)
-@Import(MappersTestConfiguration.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class ProductServiceTest {
