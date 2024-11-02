@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.5'
     id 'io.spring.dependency-management' version '1.1.6'
-//    id 'org.barfuin.gradle.jacocolog' version '3.1.0'
+    id 'org.barfuin.gradle.jacocolog' version '3.1.0'
 }
 
 group = 'dev.usenkonastia'
@@ -14,14 +14,22 @@ java {
     }
 }
 
-//ext {
-//    // Minimal Coverage
-//    minimumCoveragePerFile = 0.8
-//    filesExcludedFromCoverage = [
-//            "**/*MarketApplication.*",
-//            "**/config/*Configuration.*"
-//    ]
-//}
+ext {
+    // Minimal Coverage
+    minimumCoveragePerFile = 0.8
+    filesExcludedFromCoverage = [
+            "**/*MarketApplication.*",
+            "**/config/*Configuration.*",
+            "**/domain/order/*",
+            "**/domain/*Category.*",
+            "**/dto/order/*",
+            "**/dto/category/*",
+            "**service/mapper/*CategoryMapper.*",
+            "**service/mapper/*OrderMapper.*",
+            "**service/mapper/*CategoryMapperImpl.*",
+            "**service/mapper/*OrderMapperImpl.*",
+    ]
+}
 
 configurations {
     compileOnly {
@@ -32,13 +40,15 @@ configurations {
 repositories {
     mavenCentral()
 }
-//
-//apply from: "${rootProject.projectDir}/gradle/test.gradle"
-//apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
+
+apply from: "${rootProject.projectDir}/gradle/test.gradle"
+apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
 
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
