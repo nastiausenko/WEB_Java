@@ -120,7 +120,7 @@ public class ProductControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.products.length()").value(productListDto.getProducts().size())) // Перевірка розміру списку
+                .andExpect(jsonPath("$.products.length()").value(productListDto.getProducts().size()))
                 .andExpect(jsonPath("$.products[0].productName").value(productListDto.getProducts().get(0).getProductName()))
                 .andExpect(jsonPath("$.products[1].productName").value(productListDto.getProducts().get(1).getProductName()))
                 .andExpect(jsonPath("$.products[2].productName").value(productListDto.getProducts().get(2).getProductName()));
