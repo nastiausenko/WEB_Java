@@ -18,7 +18,6 @@ public class ProductDto {
     @NotBlank(message = "Product name cannot be null")
     String productName;
 
-    @PositiveOrZero(message = "Id must be positive")
     String categoryId;
 
     @Size(max = 255, message = "Description cannot exceed 255 characters")

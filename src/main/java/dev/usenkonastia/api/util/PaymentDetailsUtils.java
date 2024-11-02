@@ -1,6 +1,6 @@
 package dev.usenkonastia.api.util;
 
-import dev.usenkonastia.api.web.ParamsViolationDetails;
+import dev.usenkonastia.api.web.exception.ParamsViolationDetails;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.ProblemDetail;
 

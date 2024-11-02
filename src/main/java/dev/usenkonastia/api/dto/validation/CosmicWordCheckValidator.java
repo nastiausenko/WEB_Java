@@ -9,7 +9,7 @@ import java.util.List;
 public class CosmicWordCheckValidator implements ConstraintValidator<CosmicWordCheck, String> {
 
     private final List<String> cosmicTerms = Arrays.asList("star", "galaxy", "comet", "mercury",
-            "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto", "sun", "milky way", "galaxy",
+            "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto", "sun", "milky way",
             "space", "astronaut");
 
     @Override

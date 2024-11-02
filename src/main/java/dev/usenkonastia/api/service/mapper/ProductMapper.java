@@ -19,6 +19,7 @@ public interface ProductMapper {
     @Mapping(source = "quantity", target = "quantity")
     ProductDto toProductDto(Product product);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "productName", target = "productName")
     @Mapping(source = "categoryId", target = "categoryId")
     @Mapping(source = "productDescription", target = "description")

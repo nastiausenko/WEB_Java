@@ -18,16 +18,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-            Product newProduct = Product.builder()
-                    .id(UUID.randomUUID())
-                    .categoryId(product.getCategoryId())
-                    .productName(product.getProductName())
-                    .description(product.getDescription())
-                    .price(product.getPrice())
-                    .quantity(product.getQuantity())
-                    .build();
-            products.add(newProduct);
-            return newProduct;
+            products.add(product);
+            return product;
     }
 
     @Override

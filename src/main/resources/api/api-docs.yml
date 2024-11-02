@@ -97,90 +97,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/v1/category/{id}:
-    get:
-      tags:
-        - Category
-      operationId: getCategoryById
-      summary: Get category by id
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Category found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryDto'
-        '404':
-          description: Category not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    put:
-      tags:
-        - Category
-      operationId: updateCategory
-      summary: Update category by id
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CategoryDto'
-        required: true
-      responses:
-        '200':
-          description: Category updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryDto'
-        '404':
-          description: Category not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-    delete:
-      tags:
-        - Category
-      operationId: deleteCategory
-      summary: Delete category by id
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '204':
-          description: Category deleted successfully
-        '404':
-          description: Category not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/product:
     get:
       tags:
@@ -218,43 +134,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-  /api/v1/category:
-    get:
-      tags:
-        - Category
-      operationId: getAllCategories
-      summary: Get all products
-      responses:
-        '200':
-          description: List of all categories
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryListDto'
-    post:
-      tags:
-        - Category
-      operationId: createCategory
-      summary: Create a new category
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CategoryDto'
-        required: true
-      responses:
-        '200':
-          description: Category created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryDto'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
 components:
   schemas:
     ProductDto:
@@ -267,7 +146,7 @@ components:
           maxLength: 100
           pattern: "(?i).*(star|galaxy|comet|mercury|venus
                     |earth|mars|jupiter|saturn|uranus|neptune
-                    |pluto|sun|milky way|galaxy|space|astronaut).*"
+                    |pluto|sun|milky way|space|astronaut).*"
           description: Name of the product
         categoryId:
           type: string
@@ -287,24 +166,6 @@ components:
           format: int32
           minimum: 0
           description: Quantity of the product in stock
-    CategoryDto:
-      required:
-        - categoryName
-      type: object
-      properties:
-        categoryName:
-          type: string
-          minLength: 0
-          maxLength: 100
-          pattern: "(?i).*(star|galaxy|comet|mercury|venus
-                    |earth|mars|jupiter|saturn|uranus|neptune
-                    |pluto|sun|milky way|galaxy|space|astronaut).*"
-          description: Name of the category
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductDto'
-          description: List of products belonging to the category
     ProductEntryDto:
       type: object
       properties:
@@ -336,25 +197,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductEntryDto'
-    CategoryEntryDto:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductEntryDto'
-    CategoryListDto:
-      type: object
-      properties:
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/CategoryEntryDto'
     ErrorResponse:
       type: object
       properties:

@@ -28,6 +28,7 @@ public interface CategoryMapper {
     CategoryEntryDto toCategoryEntryDto(Category category);
 
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "categoryName", target = "name")
     @Mapping(source = "products", target = "products")
     Category toCategory(CategoryDto categoryDto);

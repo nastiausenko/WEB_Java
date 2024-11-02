@@ -1,4 +1,4 @@
-package dev.usenkonastia.api.web;
+package dev.usenkonastia.api.web.exception;
 
 import lombok.Builder;
 import lombok.Value;
