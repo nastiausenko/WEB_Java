@@ -3,6 +3,8 @@ package dev.usenkonastia.api.web;
 import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.dto.product.ProductDto;
 import dev.usenkonastia.api.dto.product.ProductListDto;
+import dev.usenkonastia.api.featuretoggle.FeatureToggles;
+import dev.usenkonastia.api.featuretoggle.annotation.FeatureToggle;
 import dev.usenkonastia.api.service.ProductService;
 import dev.usenkonastia.api.service.mapper.ProductMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +37,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
         return ResponseEntity.ok(productMapper.toProductDto(productService.createProduct(product)));

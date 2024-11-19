@@ -32,14 +32,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = Product.builder()
-                .id(UUID.randomUUID())
-                .categoryId(UUID.randomUUID().toString())
-                .productName("Venus Yarn")
-                .description("Soft yarn for space cats")
-                .price(48.8)
-                .quantity(36)
-                .build();
+        product = buildProduct("02ffd70d-6951-4780-bb64-536446981d78", "Venus Yarn",
+                "Soft yarn for space cats", 48.8, 36 );
     }
 
     @Test
@@ -52,8 +46,21 @@ class ProductServiceTest {
     }
 
     @Test
+    void testGetProductById() {
+        product = productService.createProduct(product);
+        Product result = productService.getProductById(product.getId());
+        assertThat(result).isNotNull();
+        assertEquals(product.getId(), result.getId());
+        assertEquals(product.getCategoryId(), result.getCategoryId());
+        assertEquals(product.getProductName(), result.getProductName());
+        assertEquals(product.getDescription(), result.getDescription());
+        assertEquals(product.getPrice(), result.getPrice());
+        assertEquals(product.getQuantity(), result.getQuantity());
+    }
+
+    @Test
     void testUpdateProduct() {
-        productService.createProduct(product);
+        product = productService.createProduct(product);
         Product updatedProduct = Product.builder()
                 .id(product.getId())
                 .categoryId(product.getCategoryId())
@@ -78,26 +85,13 @@ class ProductServiceTest {
     }
 
     @Test
-    void testGetProductById() {
-        productService.createProduct(product);
-        Product result = productService.getProductById(product.getId());
-        assertThat(result).isNotNull();
-        assertEquals(product.getId(), result.getId());
-        assertEquals(product.getCategoryId(), result.getCategoryId());
-        assertEquals(product.getProductName(), result.getProductName());
-        assertEquals(product.getDescription(), result.getDescription());
-        assertEquals(product.getPrice(), result.getPrice());
-        assertEquals(product.getQuantity(), result.getQuantity());
-    }
-
-    @Test
     void testGetProductByIdNotFound() {
         assertThrows(ProductNotFoundException.class , () -> productService.getProductById(UUID.randomUUID()));
     }
 
     @Test
     void testDeleteProduct() {
-        productService.createProduct(product);
+        product = productService.createProduct(product);
         productService.deleteProduct(product.getId());
         assertThat(productService.getAllProducts()).doesNotContain(product);
     }
@@ -110,7 +104,7 @@ class ProductServiceTest {
     @ParameterizedTest
     @MethodSource("getProducts")
     void testGetAllProducts(Product product) {
-        productService.createProduct(product);
+        product = productService.createProduct(product);
         List<Product> result = productService.getAllProducts();
         assertThat(result).contains(product);
     }
