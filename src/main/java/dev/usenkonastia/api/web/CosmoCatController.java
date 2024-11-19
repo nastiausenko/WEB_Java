@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @Tag(name = "Cosmo Cat")
-@RequestMapping("/cosmo-cat")
+@RequestMapping("/api/v1/cosmo-cat")
 @RequiredArgsConstructor
 public class CosmoCatController {
     private final CosmoCatService cosmoCatService;
