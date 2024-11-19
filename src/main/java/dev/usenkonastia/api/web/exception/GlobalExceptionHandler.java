@@ -1,6 +1,7 @@
 package dev.usenkonastia.api.web.exception;
 
 import dev.usenkonastia.api.featuretoggle.exception.FeatureToggleNotEnabledException;
+import dev.usenkonastia.api.service.exception.CatNotFoundException;
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
         problemDetail.setType(create("product-not-found"));
         problemDetail.setTitle("Product Not Found");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(CatNotFoundException.class)
+    ProblemDetail handleCatNotFound(CatNotFoundException ex) {
+        log.info("Cat Not Found exception raised");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("cat-not-found"));
+        problemDetail.setTitle("Cat Not Found");
         return problemDetail;
     }
 
