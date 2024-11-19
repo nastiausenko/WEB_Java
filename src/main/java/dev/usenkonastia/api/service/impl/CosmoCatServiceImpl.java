@@ -43,7 +43,7 @@ public class CosmoCatServiceImpl implements CosmoCatService {
         CosmoCat existingCat = getCatById(catId);
 
         CosmoCat updatedExistingCat = CosmoCat.builder()
-                .catId(updatedCat.getCatId())
+                .catId(catId)
                 .catName(updatedCat.getCatName())
                 .email(updatedCat.getEmail())
                 .build();

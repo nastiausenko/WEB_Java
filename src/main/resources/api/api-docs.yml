@@ -97,6 +97,95 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/cosmo-cat/{id}:
+    get:
+      summary: Get cosmo cat by id
+      tags:
+        - Cosmo Cat
+      operationId: getCatById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Cat Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CosmoCatDto'
+        '404':
+          description: Cat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Cosmo Cat
+      operationId: updateCat
+      summary: Update cosmo cat by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CosmoCatDto'
+        required: true
+      responses:
+        '200':
+          description: Cat updated
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CosmoCatDto'
+        '404':
+          description: Cat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+    delete:
+      tags:
+        - Cosmo Cat
+      operationId: deleteCat
+      summary: Delete cat by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Cat deleted
+          content:
+            'application/json':
+              schema:
+                type: object
+        '404':
+          description: Cat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/v1/product:
     get:
       tags:
@@ -128,6 +217,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductDto'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+  /api/v1/cosmo-cat:
+    get:
+      tags:
+        - Cosmo Cat
+      summary: Get all cosmo cats
+      operationId: getCosmoCats
+      responses:
+        '200':
+          description: List of all cosmo cats
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CosmoCatListDto'
+    post:
+      summary: Create a new cosmo cat
+      tags:
+        - Cosmo Cat
+      operationId: createCat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CosmoCatDto'
+        required: true
+      responses:
+        '200':
+          description: Cat created successfully
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CosmoCatDto'
         '400':
           description: Invalid input
           content:
@@ -197,6 +323,42 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductEntryDto'
+    CosmoCatDto:
+      required:
+        - catName
+        - email
+      type: object
+      properties:
+        catName:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Name of the cosmo cat
+        email:
+          type: string
+          format: email
+          description: Email of the cat
+    CosmoCatEntryDto:
+      type: object
+      properties:
+        catId:
+          type: string
+          format: uuid
+          description: Unique identifier of the cosmo cat
+        catName:
+          type: string
+          description: Name of the cosmo cat
+        email:
+          type: string
+          format: email
+          description: Email of the cat
+    CosmoCatListDto:
+      type: object
+      properties:
+        cosmoCats:
+          type: array
+          items:
+            $ref: '#/components/schemas/CosmoCatEntryDto'
     ErrorResponse:
       type: object
       properties:
