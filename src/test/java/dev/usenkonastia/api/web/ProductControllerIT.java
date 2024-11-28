@@ -5,11 +5,16 @@ import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.dto.product.ProductDto;
 import dev.usenkonastia.api.dto.product.ProductEntryDto;
 import dev.usenkonastia.api.dto.product.ProductListDto;
+import dev.usenkonastia.api.featuretoggle.FeatureToggleExtension;
+import dev.usenkonastia.api.featuretoggle.FeatureToggles;
+import dev.usenkonastia.api.featuretoggle.annotation.DisabledFeatureToggle;
+import dev.usenkonastia.api.featuretoggle.annotation.EnabledFeatureToggle;
 import dev.usenkonastia.api.service.ProductService;
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @AutoConfigureMockMvc
+@ExtendWith(FeatureToggleExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("Product Controller Tests")
 public class ProductControllerIT {
@@ -64,6 +70,7 @@ public class ProductControllerIT {
     }
 
     @Test
+    @EnabledFeatureToggle(FeatureToggles.KITTY_PRODUCTS)
     void testCreateProduct() throws Exception {
         when(productService.createProduct(any())).thenReturn(mockProduct);
         mockMvc.perform(post("/api/v1/product")
@@ -78,6 +85,7 @@ public class ProductControllerIT {
     }
 
     @ParameterizedTest
+    @EnabledFeatureToggle(FeatureToggles.KITTY_PRODUCTS)
     @MethodSource("provideInvalidProductDtos")
     void testCreateProductFailedValidation(ProductDto productDto, String fieldName, String message) throws Exception {
         mockMvc.perform(post("/api/v1/product")
@@ -87,6 +95,16 @@ public class ProductControllerIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.invalidParams[0].fieldName").value(fieldName))
                 .andExpect(jsonPath("$.invalidParams[0].reason").value(message));
+    }
+
+    @Test
+    @DisabledFeatureToggle(FeatureToggles.KITTY_PRODUCTS)
+    void testDisabledCreateProduct() throws Exception {
+        mockMvc.perform(post("/api/v1/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productDto)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
