@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface CosmoCatRepository extends CrudRepository<CosmoCatEntity, UUID> {
+public interface CosmoCatRepository extends NaturalIdRepository<CosmoCatEntity, String> {
 
 }

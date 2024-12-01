@@ -23,5 +23,11 @@ public class CosmoCatEntity {
     UUID id;
 
     String catName;
+
+    @NaturalId
+    @Column(unique = true, nullable = false)
     String email;
+
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    List<OrderEntity> orders;
 }

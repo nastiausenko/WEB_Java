@@ -1,7 +1,6 @@
 package dev.usenkonastia.api.service.impl;
 
 import dev.usenkonastia.api.domain.CosmoCat;
-import dev.usenkonastia.api.dto.cosmoCat.CosmoCatDto;
 import dev.usenkonastia.api.repository.CosmoCatRepository;
 import dev.usenkonastia.api.repository.entity.CosmoCatEntity;
 import dev.usenkonastia.api.service.CosmoCatService;
@@ -14,9 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 @Slf4j
@@ -37,23 +35,9 @@ public class CosmoCatServiceImpl implements CosmoCatService {
 
     @Override
     @Transactional(readOnly = true)
-    public CosmoCat getCatById(UUID catId) {
-        CosmoCatEntity cosmoCat = cosmoCatRepository.findById(catId).orElseThrow(() -> new CatNotFoundException(catId));
+    public CosmoCat getCatById(String email) {
+        CosmoCatEntity cosmoCat = cosmoCatRepository.findByNaturalId(email).orElseThrow(() -> new CatNotFoundException(email));
         return cosmoCatMapper.toCosmoCat(cosmoCat);
-    }
-
-    @Override
-    @Transactional
-    public CosmoCat updateCat(UUID catId, CosmoCat updatedCat) {
-        CosmoCatEntity cosmoCat = cosmoCatRepository.findById(catId).orElseThrow(() -> new CatNotFoundException(catId));
-        try {
-            cosmoCat.setId(catId);
-            cosmoCat.setCatName(updatedCat.getCatName());
-            cosmoCat.setEmail(updatedCat.getEmail());
-            return cosmoCatMapper.toCosmoCat(cosmoCatRepository.save(cosmoCat));
-        } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
-        }
     }
 
     @Override
@@ -68,9 +52,10 @@ public class CosmoCatServiceImpl implements CosmoCatService {
 
     @Override
     @Transactional
-    public void deleteCat(UUID catId) {
+    public void deleteCat(String email) {
        try {
-           cosmoCatRepository.deleteById(catId);
+           cosmoCatRepository.findByNaturalId(email).orElseThrow(() -> new CatNotFoundException(email));
+           cosmoCatRepository.deleteByNaturalId(email);
        } catch (Exception e) {
            throw new PersistenceException(e.getMessage());
        }
