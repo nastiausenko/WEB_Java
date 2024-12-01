@@ -15,8 +15,6 @@ databaseChangeLog:
               - column:
                   name: category_id
                   type: UUID
-                  constraints:
-                    nullable: false
               - column:
                   name: product_name
                   type: VARCHAR(100)
