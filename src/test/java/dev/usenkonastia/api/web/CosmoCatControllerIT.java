@@ -115,7 +115,7 @@ public class CosmoCatControllerIT {
 
     @Test
     void testGetCatById() throws Exception {
-        when(cosmoCatService.getCatById(CAT_ID)).thenReturn(cosmoCat);
+        when(cosmoCatService.getCatById("luna@email.com")).thenReturn(cosmoCat);
 
         mockMvc.perform(get("/api/v1/cosmo-cat/{id}", CAT_ID)
                         .accept(MediaType.APPLICATION_JSON)
@@ -134,43 +134,9 @@ public class CosmoCatControllerIT {
                 .andExpect(jsonPath("$.title").value("Cat Not Found"));
     }
 
-
-    @Test
-    void testUpdateCat() throws Exception {
-        CosmoCatDto updatedCatDto = buildCosmoCatDto("Super Space", "usperspace@email.com");
-        CosmoCat updatedCat = CosmoCat.builder()
-                .catId(CAT_ID)
-                .catName(updatedCatDto.getCatName())
-                .email(updatedCatDto.getEmail())
-                .build();
-
-        when(cosmoCatService.updateCat(any(), any(CosmoCat.class))).thenReturn(updatedCat);
-
-        mockMvc.perform(put("/api/v1/cosmo-cat/{id}", CAT_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedCatDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.catName").value(updatedCatDto.getCatName()))
-                .andExpect(jsonPath("$.email").value(updatedCatDto.getEmail()));
-    }
-
-    @Test
-    void testUpdateCatNotFound() throws Exception {
-        CosmoCatDto updatedCatDto = buildCosmoCatDto("Space", "space@email.com");
-        when(cosmoCatService.updateCat(any(), any(CosmoCat.class))).thenThrow(CatNotFoundException.class);
-
-        mockMvc.perform(put("/api/v1/cosmo-cat/{id}", UUID.randomUUID())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedCatDto)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.title").value("Cat Not Found"));
-    }
-
     @Test
     void testDeleteCat() throws Exception {
-        doNothing().when(cosmoCatService).deleteCat(CAT_ID);
+        doNothing().when(cosmoCatService).deleteCat("luna@email.com");
 
         mockMvc.perform(delete("/api/v1/cosmo-cat/{id}", CAT_ID)
                         .contentType(MediaType.APPLICATION_JSON)

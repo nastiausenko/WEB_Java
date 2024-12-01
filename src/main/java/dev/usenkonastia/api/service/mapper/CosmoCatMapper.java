@@ -27,6 +27,7 @@ public interface CosmoCatMapper {
 
     @Mapping(source = "id", target = "catId")
     @Mapping(source = "catName", target = "catName")
+    @Mapping(source = "email", target = "email")
     CosmoCat toCosmoCat(CosmoCatEntity cosmoCatEntity);
 
     default CosmoCatListDto toCosmoCatListDto(List<CosmoCat> cats) {
@@ -40,6 +41,9 @@ public interface CosmoCatMapper {
     @Mapping(source = "email", target = "email")
     CosmoCatEntryDto toCosmoCatEntryDto(CosmoCat cat);
 
+    @Mapping(source = "catId", target = "id")
+    @Mapping(source = "catName", target = "catName")
+    @Mapping(source = "email", target = "email")
     CosmoCatEntity toCosmoCatEntity(CosmoCat cosmoCat);
 
     default List<CosmoCat> toCosmoCatList(Iterator<CosmoCatEntity> cosmoCatEntityIterator) {

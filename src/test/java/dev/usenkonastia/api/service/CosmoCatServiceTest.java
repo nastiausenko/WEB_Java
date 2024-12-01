@@ -43,7 +43,7 @@ public class CosmoCatServiceTest {
     @Test
     void testGetCatById() {
         cosmoCat = cosmoCatService.createCat(cosmoCat);
-        CosmoCat result = cosmoCatService.getCatById(cosmoCat.getCatId());
+        CosmoCat result = cosmoCatService.getCatById(cosmoCat.getEmail());
         assertThat(result).isNotNull();
         assertEquals(cosmoCat.getCatId(), result.getCatId());
         assertEquals(cosmoCat.getCatName(), result.getCatName());
@@ -59,7 +59,7 @@ public class CosmoCatServiceTest {
                 .email("supercomet@email.com")
                 .build();
 
-        CosmoCat result = cosmoCatService.updateCat(cosmoCat.getCatId(), updatedCat);
+        CosmoCat result = cosmoCatService.updateCat(cosmoCat.getEmail(), updatedCat);
 
         assertThat(result).isNotNull();
         assertEquals("Super Comet", result.getCatName());
@@ -68,24 +68,24 @@ public class CosmoCatServiceTest {
 
     @Test
     void testUpdateCatNotFound() {
-        assertThrows(CatNotFoundException.class , () -> cosmoCatService.updateCat(UUID.randomUUID(), cosmoCat));
+        assertThrows(CatNotFoundException.class , () -> cosmoCatService.updateCat(String.valueOf(UUID.randomUUID()), cosmoCat));
     }
 
     @Test
     void testGetCatByIdNotFound() {
-        assertThrows(CatNotFoundException.class , () -> cosmoCatService.getCatById(UUID.randomUUID()));
+        assertThrows(CatNotFoundException.class , () -> cosmoCatService.getCatById(String.valueOf(UUID.randomUUID())));
     }
 
     @Test
     void testDeleteCat() {
         cosmoCat = cosmoCatService.createCat(cosmoCat);
-        cosmoCatService.deleteCat(cosmoCat.getCatId());
+        cosmoCatService.deleteCat(cosmoCat.getEmail());
         assertThat(cosmoCatService.getCosmoCats()).doesNotContain(cosmoCat);
     }
 
     @Test
     void testDeleteCatNotFound() {
-        assertThrows(CatNotFoundException.class , () -> cosmoCatService.deleteCat(UUID.randomUUID()));
+        assertThrows(CatNotFoundException.class , () -> cosmoCatService.deleteCat(String.valueOf(UUID.randomUUID())));
     }
 
     @ParameterizedTest

@@ -5,10 +5,10 @@ import dev.usenkonastia.api.repository.CategoryRepository;
 import dev.usenkonastia.api.repository.ProductRepository;
 import dev.usenkonastia.api.repository.entity.CategoryEntity;
 import dev.usenkonastia.api.repository.entity.ProductEntity;
+import dev.usenkonastia.api.repository.projection.ProductReportProjection;
 import dev.usenkonastia.api.service.ProductService;
 import dev.usenkonastia.api.service.exception.CategoryNotFoundException;
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
-import dev.usenkonastia.api.service.mapper.CategoryMapper;
 import dev.usenkonastia.api.service.mapper.ProductMapper;
 import jakarta.persistence.PersistenceException;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -86,6 +85,16 @@ public class ProductServiceImpl implements ProductService {
         try {
             productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
             productRepository.deleteById(productId);
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductReportProjection> getTopSellingProducts() {
+        try {
+            return productRepository.findTopSellingProducts();
         } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
