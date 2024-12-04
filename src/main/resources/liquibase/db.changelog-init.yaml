@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-cosmo-cat
+      author: Anastasiia.Usenko
+      changes:
+        # Create Cosmo_cat table
+        - createTable:
+            tableName: cosmo_cats
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cat_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        # Add unique constraints on cat_reference, email, and phone_number
+        - addUniqueConstraint:
+            tableName: cosmo_cats
+            columnNames: email
+            constraintName: uq_cat_email

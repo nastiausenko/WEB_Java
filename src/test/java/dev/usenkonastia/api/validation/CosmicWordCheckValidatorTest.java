@@ -45,7 +45,7 @@ public class CosmicWordCheckValidatorTest {
 
         Set<ConstraintViolation<TestDto>> violations = validator.validate(testDto);
         assertEquals(1, violations.size(), "Should have one violation for invalid cosmic word.");
-        assertEquals("Product name must contain a cosmic term (e.g., 'star', 'galaxy', 'comet')", violations.iterator().next().getMessage());
+        assertEquals("Name must contain a cosmic term (e.g., 'star', 'galaxy', 'comet')", violations.iterator().next().getMessage());
     }
 
     @Test

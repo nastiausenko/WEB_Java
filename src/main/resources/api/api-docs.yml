@@ -97,19 +97,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/v1/cosmo-cat/{id}:
+  /api/v1/cosmo-cat/{email}:
     get:
-      summary: Get cosmo cat by id
+      summary: Get cosmo cat by Email
       tags:
         - Cosmo Cat
       operationId: getCatById
       parameters:
-        - name: id
+        - name: email
           in: path
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: Cat Found
@@ -123,55 +122,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    put:
-      tags:
-        - Cosmo Cat
-      operationId: updateCat
-      summary: Update cosmo cat by id
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CosmoCatDto'
-        required: true
-      responses:
-        '200':
-          description: Cat updated
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/CosmoCatDto'
-        '404':
-          description: Cat not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Cosmo Cat
       operationId: deleteCat
-      summary: Delete cat by id
+      summary: Delete cat by Email
       parameters:
-        - name: id
+        - name: email
           in: path
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '204':
           description: Cat deleted
@@ -181,6 +142,42 @@ paths:
                 type: object
         '404':
           description: Cat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/{customerReference}/orders/{cartId}:
+    post:
+      tags:
+        - Order
+      operationId: placeOrder
+      summary: Place Customer Order
+      parameters:
+        - name: customerReference
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Order placed successfully
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PlaceOrderResponseDto'
+        '404':
+          description: Cosmo cat not found
           content:
             application/json:
               schema:
@@ -223,6 +220,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/cosmo-cat:
     get:
       tags:
@@ -260,6 +263,105 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+  /api/v1/category:
+    get:
+      tags:
+        - Category
+      operationId: getCategories
+      summary: Get All Categories
+      responses:
+        '200':
+          description: List of all categories
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CategoryListDto'
+    post:
+      tags:
+        - Category
+      operationId: createCategory
+      summary: Create a new category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDto'
+        required: true
+      responses:
+        '200':
+          description: Category created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CategoryDto'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+  /api/v1/product/top-selling:
+    get:
+      tags:
+        - Product
+      operationId: getTopSellingProducts
+      summary: Get Top Selling Products
+      responses:
+        '200':
+          description: List of top selling products in descending order
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductReportProjection'
+  /api/v1/category/{id}:
+    get:
+      tags:
+        - Category
+      operationId: getCategoryById
+      summary: Get Category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Category Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CategoryDto'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Category
+      operationId: deleteCategory
+      summary: Delete Category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Category deleted successfully
+        '404':
+          description: Category Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     ProductDto:
@@ -323,6 +425,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductEntryDto'
+    ProductReportProjection:
+      type: object
+      properties:
+        productName:
+          type: string
+          description: Product name
+        totalQuantity:
+          description: Total quantity sold
+          type: integer
+          format: int64
     CosmoCatDto:
       required:
         - catName
@@ -359,6 +471,79 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CosmoCatEntryDto'
+    CategoryDto:
+      required:
+        - categoryName
+      type: object
+      properties:
+        categoryName:
+          pattern: "(?i).*(star|galaxy|comet|mercury|venus
+                             |earth|mars|jupiter|saturn|uranus|neptune
+                             |pluto|sun|milky way|space|astronaut).*"
+          maxLength: 100
+          minLength: 0
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDto'
+    CategoryEntryDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: Name of the category
+        products:
+          type: array
+          description: List of products
+          items:
+            $ref: '#/components/schemas/ProductEntryDto'
+    CategoryListDto:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryEntryDto'
+    PlaceOrderRequestDto:
+      required:
+        - products
+        - totalPrice
+      type: object
+      properties:
+        products:
+          type: array
+          description: List of products in order
+          items:
+            $ref: '#/components/schemas/OrderItemDto'
+        totalPrice:
+          minimum: 0
+          description: Total price of products
+          type: number
+          format: double
+    PlaceOrderResponseDto:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        transactionId:
+          type: string
+    OrderItemDto:
+      required:
+        - productId
+        - quantity
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          format: int32
     ErrorResponse:
       type: object
       properties:

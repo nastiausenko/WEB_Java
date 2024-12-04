@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2-create-categories
+      author: Anastasiia.Usenko
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: name
+            tableName: categories
+            constraintName: unique_category_name

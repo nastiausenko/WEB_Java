@@ -2,7 +2,9 @@ package dev.usenkonastia.api.web.exception;
 
 import dev.usenkonastia.api.featuretoggle.exception.FeatureToggleNotEnabledException;
 import dev.usenkonastia.api.service.exception.CatNotFoundException;
+import dev.usenkonastia.api.service.exception.CategoryNotFoundException;
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
+import jakarta.persistence.PersistenceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -19,8 +21,8 @@ import java.util.List;
 
 import static dev.usenkonastia.api.util.PaymentDetailsUtils.getValidationErrorsProblemDetail;
 import static java.net.URI.create;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
 @ControllerAdvice
 @Slf4j
@@ -44,6 +46,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    ProblemDetail handleCategoryNotFound(CategoryNotFoundException ex) {
+        log.info("Category Not Found exception raised");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("category-not-found"));
+        problemDetail.setTitle("Category Not Found");
+        return problemDetail;
+    }
+
     @ExceptionHandler(FeatureToggleNotEnabledException.class)
     ProblemDetail handleProductNotFound(FeatureToggleNotEnabledException ex) {
         log.info("Feature is not enabled");
@@ -61,5 +72,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 errors.stream().map(err -> ParamsViolationDetails.builder().reason(err.getDefaultMessage()).fieldName(err.getField()).build()).toList();
         log.info("Input params validation failed");
         return ResponseEntity.status(BAD_REQUEST).body(getValidationErrorsProblemDetail(validationResponse));
+    }
+
+    @ExceptionHandler(PersistenceException.class)
+    ProblemDetail handlePersistenceException(PersistenceException ex) {
+        log.error("Persistence exception raised");
+        ProblemDetail problemDetail = forStatusAndDetail(INTERNAL_SERVER_ERROR, ex.getMessage());
+        problemDetail.setType(create("persistence-exception"));
+        problemDetail.setTitle("Persistence exception");
+        return problemDetail;
     }
 }

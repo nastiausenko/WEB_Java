@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @Tag(name = "Cosmo Cat")
 @RequestMapping("/api/v1/cosmo-cat")
@@ -29,9 +27,9 @@ public class CosmoCatController {
         return ResponseEntity.ok(cosmoCatMapper.toCosmoCatListDto(cosmoCatService.getCosmoCats()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CosmoCatDto> getCatById(@PathVariable UUID id) {
-        return ResponseEntity.ok(cosmoCatMapper.toCosmoCatDto(cosmoCatService.getCatById(id)));
+    @GetMapping("/{email}")
+    public ResponseEntity<CosmoCatDto> getCatById(@PathVariable String email) {
+        return ResponseEntity.ok(cosmoCatMapper.toCosmoCatDto(cosmoCatService.getCatById(email)));
     }
 
     @PostMapping
@@ -40,15 +38,9 @@ public class CosmoCatController {
         return ResponseEntity.ok(cosmoCatMapper.toCosmoCatDto(cosmoCatService.createCat(cat)));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CosmoCatDto> updateCat(@PathVariable UUID id, @Valid @RequestBody CosmoCatDto cosmoCatDto) {
-        CosmoCat cat = cosmoCatMapper.toCosmoCat(cosmoCatDto);
-        return ResponseEntity.ok(cosmoCatMapper.toCosmoCatDto(cosmoCatService.updateCat(id, cat)));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCat(@PathVariable UUID id) {
-        cosmoCatService.deleteCat(id);
+    @DeleteMapping("/{email}")
+    public ResponseEntity<?> deleteCat(@PathVariable String email) {
+        cosmoCatService.deleteCat(email);
         return ResponseEntity.noContent().build();
     }
 }

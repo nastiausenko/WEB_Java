@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Order {
     UUID id;
     String cartId;
-    String transactionId;
+    UUID transactionId;
     String customerReference;
     List<OrderItem> products;
     Double totalPrice;
