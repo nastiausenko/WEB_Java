@@ -8,9 +8,9 @@ import dev.usenkonastia.api.repository.entity.ProductEntity;
 import dev.usenkonastia.api.repository.projection.ProductReportProjection;
 import dev.usenkonastia.api.service.ProductService;
 import dev.usenkonastia.api.service.exception.CategoryNotFoundException;
+import dev.usenkonastia.api.service.exception.PersistenceException;
 import dev.usenkonastia.api.service.exception.ProductNotFoundException;
 import dev.usenkonastia.api.service.mapper.ProductMapper;
-import jakarta.persistence.PersistenceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,9 +32,13 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(propagation = Propagation.NESTED)
     public Product createProduct(Product product) {
         try {
+            if (product.getCategoryId() != null) {
+                categoryRepository.findById(UUID.fromString(product.getCategoryId()))
+                        .orElseThrow(() -> new CategoryNotFoundException(UUID.fromString(product.getCategoryId())));
+            }
             return productMapper.toProduct(productRepository.save(productMapper.toProductEntity(product)));
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -57,25 +60,27 @@ public class ProductServiceImpl implements ProductService {
                 product.setPrice(updatedProduct.getPrice());
                 product.setQuantity(updatedProduct.getQuantity());
 
-                if (updatedProduct.getCategoryId() != null) {
-                    CategoryEntity categoryEntity = categoryRepository.findById(UUID.fromString(updatedProduct.getCategoryId()))
-                            .orElseThrow(() -> new CategoryNotFoundException(UUID.fromString(updatedProduct.getCategoryId())));
-                    product.setCategory(categoryEntity);
-                }
-
-                return productMapper.toProduct(productRepository.save(product));
-            } catch (Exception e) {
-                throw new PersistenceException(e.getMessage());
+            if (updatedProduct.getCategoryId() != null) {
+                UUID categoryId = UUID.fromString(updatedProduct.getCategoryId());
+                CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+                product.setCategory(categoryEntity);
             }
+
+            return productMapper.toProduct(productRepository.save(product));
+        } catch (Exception e) {
+            throw new PersistenceException(e);
+        }
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
-        try{
+        try {
             return productMapper.toProductList(productRepository.findAll().iterator());
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -86,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
             productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
             productRepository.deleteById(productId);
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -96,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             return productRepository.findTopSellingProducts();
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 }

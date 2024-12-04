@@ -28,6 +28,6 @@ public class CosmoCatEntity {
     @Column(unique = true, nullable = false)
     String email;
 
-    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     List<OrderEntity> orders;
 }

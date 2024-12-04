@@ -1,11 +1,9 @@
 package dev.usenkonastia.api.service.mapper;
 
-import dev.usenkonastia.api.domain.CosmoCat;
 import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.dto.product.ProductDto;
 import dev.usenkonastia.api.dto.product.ProductEntryDto;
 import dev.usenkonastia.api.dto.product.ProductListDto;
-import dev.usenkonastia.api.repository.entity.CosmoCatEntity;
 import dev.usenkonastia.api.repository.entity.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -56,9 +54,7 @@ public interface ProductMapper {
     default List<Product> toProductList(Iterator<ProductEntity> productEntityIterator) {
         List<Product> result = new ArrayList<>();
         productEntityIterator.forEachRemaining(
-                (productEntity) -> {
-                    result.add(toProduct(productEntity));
-                });
+                (productEntity) -> result.add(toProduct(productEntity)));
         return result;
     }
 }

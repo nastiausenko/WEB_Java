@@ -23,6 +23,7 @@ public interface OrderMapper {
     @Mapping(target = "products", source = "orderDto.products")
     OrderContext toOrderContext(String cartId, String customerReference, PlaceOrderRequestDto orderDto);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "cartId", target = "cartId")
     @Mapping(target = "paymentReference", expression = "java(java.util.UUID.randomUUID().toString())")
     @Mapping(source = "customerReference", target = "customer.email")

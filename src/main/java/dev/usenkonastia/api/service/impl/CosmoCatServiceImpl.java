@@ -5,8 +5,8 @@ import dev.usenkonastia.api.repository.CosmoCatRepository;
 import dev.usenkonastia.api.repository.entity.CosmoCatEntity;
 import dev.usenkonastia.api.service.CosmoCatService;
 import dev.usenkonastia.api.service.exception.CatNotFoundException;
+import dev.usenkonastia.api.service.exception.PersistenceException;
 import dev.usenkonastia.api.service.mapper.CosmoCatMapper;
-import jakarta.persistence.PersistenceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class CosmoCatServiceImpl implements CosmoCatService {
         try {
             return cosmoCatMapper.toCosmoCat(cosmoCatRepository.save(cosmoCatMapper.toCosmoCatEntity(cat)));
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -46,7 +46,7 @@ public class CosmoCatServiceImpl implements CosmoCatService {
         try {
             return cosmoCatMapper.toCosmoCatList(cosmoCatRepository.findAll().iterator());
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -57,7 +57,7 @@ public class CosmoCatServiceImpl implements CosmoCatService {
            cosmoCatRepository.findByNaturalId(email).orElseThrow(() -> new CatNotFoundException(email));
            cosmoCatRepository.deleteByNaturalId(email);
        } catch (Exception e) {
-           throw new PersistenceException(e.getMessage());
+           throw new PersistenceException(e);
        }
     }
 }

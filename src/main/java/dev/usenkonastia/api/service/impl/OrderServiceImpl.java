@@ -9,8 +9,8 @@ import dev.usenkonastia.api.repository.entity.OrderEntity;
 import dev.usenkonastia.api.repository.entity.OrderItemEntity;
 import dev.usenkonastia.api.service.OrderService;
 import dev.usenkonastia.api.service.exception.CatNotFoundException;
+import dev.usenkonastia.api.service.exception.PersistenceException;
 import dev.usenkonastia.api.service.mapper.OrderMapper;
-import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
             return orderMapper.toOrder(orderRepository.save(orderEntity));
 
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 }

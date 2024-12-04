@@ -4,8 +4,8 @@ import dev.usenkonastia.api.domain.Category;
 import dev.usenkonastia.api.repository.CategoryRepository;
 import dev.usenkonastia.api.service.CategoryService;
 import dev.usenkonastia.api.service.exception.CategoryNotFoundException;
+import dev.usenkonastia.api.service.exception.PersistenceException;
 import dev.usenkonastia.api.service.mapper.CategoryMapper;
-import jakarta.persistence.PersistenceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             return categoryMapper.toCategory(categoryRepository.save(categoryMapper.toCategoryEntity(category)));
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -41,18 +41,14 @@ public class CategoryServiceImpl implements CategoryService {
             });
             categoryRepository.deleteById(categoryId);
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
     public Category getCategoryById(UUID categoryId) {
-        try {
-            return categoryMapper.toCategory(categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryNotFoundException(categoryId)));
-        } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
-        }
+        return categoryMapper.toCategory(categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryNotFoundException(categoryId)));
     }
 
     @Override
@@ -61,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             return categoryMapper.toCategoryList(categoryRepository.findAll().iterator());
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 }

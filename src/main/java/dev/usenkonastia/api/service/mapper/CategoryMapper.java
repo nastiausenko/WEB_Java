@@ -1,12 +1,10 @@
 package dev.usenkonastia.api.service.mapper;
 
 import dev.usenkonastia.api.domain.Category;
-import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.dto.category.CategoryDto;
 import dev.usenkonastia.api.dto.category.CategoryEntryDto;
 import dev.usenkonastia.api.dto.category.CategoryListDto;
 import dev.usenkonastia.api.repository.entity.CategoryEntity;
-import dev.usenkonastia.api.repository.entity.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
