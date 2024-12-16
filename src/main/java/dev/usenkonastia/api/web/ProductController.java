@@ -5,6 +5,7 @@ import dev.usenkonastia.api.dto.product.ProductDto;
 import dev.usenkonastia.api.dto.product.ProductListDto;
 import dev.usenkonastia.api.featuretoggle.FeatureToggles;
 import dev.usenkonastia.api.featuretoggle.annotation.FeatureToggle;
+import dev.usenkonastia.api.repository.projection.ProductReportProjection;
 import dev.usenkonastia.api.service.ProductService;
 import dev.usenkonastia.api.service.mapper.ProductMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -34,6 +36,11 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductListDto> getAllProducts() {
         return ResponseEntity.ok(productMapper.toProductListDto(productService.getAllProducts()));
+    }
+
+    @GetMapping("/top-selling")
+    public ResponseEntity<List<ProductReportProjection>> getTopSellingProducts() {
+        return ResponseEntity.ok(productService.getTopSellingProducts());
     }
 
     @PostMapping

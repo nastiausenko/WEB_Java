@@ -1,49 +1,83 @@
 package dev.usenkonastia.api.service;
 
 import dev.usenkonastia.api.domain.CosmoCat;
+import dev.usenkonastia.api.repository.CosmoCatRepository;
+import dev.usenkonastia.api.repository.entity.CosmoCatEntity;
 import dev.usenkonastia.api.service.exception.CatNotFoundException;
+import dev.usenkonastia.api.service.exception.PersistenceException;
 import dev.usenkonastia.api.service.impl.CosmoCatServiceImpl;
+import dev.usenkonastia.api.service.mapper.CosmoCatMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Cosmo Cat Service Tests")
 @SpringBootTest(classes = CosmoCatServiceImpl.class)
 public class CosmoCatServiceTest {
     @Autowired
     private CosmoCatService cosmoCatService;
+    @MockBean
+    private CosmoCatRepository cosmoCatRepository;
+    @MockBean
+    private CosmoCatMapper cosmoCatMapper;
     private CosmoCat cosmoCat;
+    private CosmoCatEntity cosmoCatEntity;
 
     @BeforeEach
     void setUp() {
         cosmoCat = buildCat("Comet", "comet@email.com");
+        cosmoCatEntity = CosmoCatEntity.builder()
+                .catName("Comet")
+                .email("comet@email.com")
+                .build();
     }
 
     @Test
     void testCreateCat() {
-        CosmoCat cat = cosmoCatService.createCat(cosmoCat);
+        when(cosmoCatMapper.toCosmoCatEntity((any(CosmoCat.class)))).thenReturn(cosmoCatEntity);
+        when(cosmoCatRepository.save(any(CosmoCatEntity.class))).thenReturn(cosmoCatEntity);
+        when(cosmoCatMapper.toCosmoCat(any(CosmoCatEntity.class))).thenReturn(cosmoCat);
 
-        assertThat(cat).isNotNull();
-        assertThat(cat.getCatId()).isNotNull();
-        assertThat(cosmoCatService.getCosmoCats()).contains(cat);
+        CosmoCat newCat = cosmoCatService.createCat(cosmoCat);
+
+        assertThat(newCat).isNotNull();
+        assertThat(newCat.getCatName()).isEqualTo("Comet");
+
+        verify(cosmoCatRepository).save(any(CosmoCatEntity.class));
+    }
+
+    @Test
+    void testCreateCatPersistenceException() {
+        when(cosmoCatMapper.toCosmoCatEntity(any(CosmoCat.class))).thenReturn(cosmoCatEntity);
+        when(cosmoCatRepository.save(any(CosmoCatEntity.class))).thenThrow(new RuntimeException("Database error"));
+
+        PersistenceException exception = assertThrows(PersistenceException.class,
+                () -> cosmoCatService.createCat(cosmoCat));
+
+        assertThat(exception.getCause()).isInstanceOf(RuntimeException.class);
+        assertThat(exception.getCause().getMessage()).isEqualTo("Database error");
     }
 
     @Test
     void testGetCatById() {
-        cosmoCat = cosmoCatService.createCat(cosmoCat);
-        CosmoCat result = cosmoCatService.getCatById(cosmoCat.getCatId());
+        when(cosmoCatRepository.findByNaturalId(any(String.class))).thenReturn(Optional.of(cosmoCatEntity));
+        when(cosmoCatMapper.toCosmoCat(any(CosmoCatEntity.class))).thenReturn(cosmoCat);
+
+        CosmoCat result = cosmoCatService.getCatById(cosmoCat.getEmail());
         assertThat(result).isNotNull();
         assertEquals(cosmoCat.getCatId(), result.getCatId());
         assertEquals(cosmoCat.getCatName(), result.getCatName());
@@ -51,57 +85,44 @@ public class CosmoCatServiceTest {
     }
 
     @Test
-    void testUpdateCat() {
-        cosmoCat = cosmoCatService.createCat(cosmoCat);
-        CosmoCat updatedCat = CosmoCat.builder()
-                .catId(cosmoCat.getCatId())
-                .catName("Super Comet")
-                .email("supercomet@email.com")
-                .build();
-
-        CosmoCat result = cosmoCatService.updateCat(cosmoCat.getCatId(), updatedCat);
-
-        assertThat(result).isNotNull();
-        assertEquals("Super Comet", result.getCatName());
-        assertEquals("supercomet@email.com", result.getEmail());
-    }
-
-    @Test
-    void testUpdateCatNotFound() {
-        assertThrows(CatNotFoundException.class , () -> cosmoCatService.updateCat(UUID.randomUUID(), cosmoCat));
-    }
-
-    @Test
     void testGetCatByIdNotFound() {
-        assertThrows(CatNotFoundException.class , () -> cosmoCatService.getCatById(UUID.randomUUID()));
+        assertThrows(CatNotFoundException.class , () -> cosmoCatService.getCatById(String.valueOf(UUID.randomUUID())));
     }
 
     @Test
     void testDeleteCat() {
-        cosmoCat = cosmoCatService.createCat(cosmoCat);
-        cosmoCatService.deleteCat(cosmoCat.getCatId());
+        when(cosmoCatRepository.findByNaturalId(any(String.class))).thenReturn(Optional.of(cosmoCatEntity));
+        when(cosmoCatMapper.toCosmoCat(any(CosmoCatEntity.class))).thenReturn(cosmoCat);
+
+        cosmoCatService.deleteCat(cosmoCat.getEmail());
         assertThat(cosmoCatService.getCosmoCats()).doesNotContain(cosmoCat);
     }
 
     @Test
-    void testDeleteCatNotFound() {
-        assertThrows(CatNotFoundException.class , () -> cosmoCatService.deleteCat(UUID.randomUUID()));
-    }
+    void testGetCosmoCats() {
+        CosmoCat cosmoCat2 = buildCat("Nebula", "nebula@email.com");
+        CosmoCatEntity cosmoCatEntity1 = CosmoCatEntity.builder()
+                .catName("Nebula")
+                .email("nebula@email.com").build();
+        List<CosmoCat> cosmoCats = List.of(cosmoCat, cosmoCat2);
+        List<CosmoCatEntity> cosmoCatEntities = List.of(cosmoCatEntity, cosmoCatEntity1);
+        when(cosmoCatRepository.findAll()).thenReturn(cosmoCatEntities);
+        when(cosmoCatMapper.toCosmoCatList(any())).thenReturn(cosmoCats);
 
-    @ParameterizedTest
-    @MethodSource("getCosmoCats")
-    void testGetCosmoCats(CosmoCat cosmoCat) {
-        cosmoCat = cosmoCatService.createCat(cosmoCat);
         List<CosmoCat> result = cosmoCatService.getCosmoCats();
-        assertThat(result).contains(cosmoCat);
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactly(cosmoCat, cosmoCat2);
     }
 
-    private static Stream<CosmoCat> getCosmoCats() {
-        return Stream.of(
-                buildCat("Milo", "milo@email.com"),
-                buildCat("Luna", "luna@email.com"),
-                buildCat("Nova", "nova@emailcom")
-        );
+    @Test
+    void testGetAllCategoriesPersistenceException() {
+        when(cosmoCatRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        PersistenceException exception = assertThrows(PersistenceException.class,
+                cosmoCatService::getCosmoCats);
+
+        assertThat(exception.getCause()).isInstanceOf(RuntimeException.class);
+        assertThat(exception.getCause().getMessage()).isEqualTo("Database error");
     }
 
     private static CosmoCat buildCat(String name, String email) {
