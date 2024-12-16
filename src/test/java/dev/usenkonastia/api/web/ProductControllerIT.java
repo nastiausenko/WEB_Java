@@ -200,14 +200,6 @@ public class ProductControllerIT extends AbstractIt {
                 .andExpect(status().isNoContent());
     }
 
-    @Test
-    void testDeleteProductNotFound() throws Exception {
-        mockMvc.perform(delete("/api/v1/product/{id}", UUID.randomUUID())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
     private static Stream<Arguments> provideInvalidProductDtos() {
         return Stream.of(
                 Arguments.of(buildProductDto("Milk", "Milk for astronauts", 29.7, 32), "productName",

@@ -141,16 +141,6 @@ public class CosmoCatControllerIT extends AbstractIt {
                 .andExpect(status().isNoContent());
     }
 
-    @Test
-    void testDeleteCatNotFound() throws Exception {
-        saveCosmoCatEntity();
-        mockMvc.perform(delete("/api/v1/cosmo-cat/{email}", "y@email.com")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-
     private void buildCosmoCat(String name, String email) {
         cosmoCatRepository.save(CosmoCatEntity.builder()
                 .id(UUID.randomUUID())

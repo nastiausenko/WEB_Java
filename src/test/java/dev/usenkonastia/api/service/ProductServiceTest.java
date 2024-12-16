@@ -3,6 +3,7 @@ package dev.usenkonastia.api.service;
 import dev.usenkonastia.api.domain.Product;
 import dev.usenkonastia.api.repository.CategoryRepository;
 import dev.usenkonastia.api.repository.ProductRepository;
+import dev.usenkonastia.api.repository.entity.CategoryEntity;
 import dev.usenkonastia.api.repository.entity.ProductEntity;
 import dev.usenkonastia.api.repository.projection.ProductReportProjection;
 import dev.usenkonastia.api.service.exception.PersistenceException;
@@ -148,6 +149,45 @@ class ProductServiceTest {
     }
 
     @Test
+    void testUpdateProductSetCategory() {
+        UUID existingCategoryId = UUID.randomUUID();
+        CategoryEntity existingCategory = CategoryEntity.builder()
+                .id(existingCategoryId)
+                .categoryName("Cosmic Toys")
+                .build();
+        ProductEntity updatedProductEntity = ProductEntity.builder()
+                .id(product.getId())
+                .productName("Updated Comet Laser")
+                .description("Updated laser toy description")
+                .category(existingCategory)
+                .price(35.0)
+                .quantity(8)
+                .build();
+        Product updatedProduct = Product.builder()
+                .id(product.getId())
+                .productName("Updated Comet Laser")
+                .description("Updated laser toy description")
+                .categoryId(existingCategory.getId().toString())
+                .price(35.0)
+                .quantity(8)
+                .build();
+
+        when(productRepository.findById(any(UUID.class))).thenReturn(Optional.of(productEntity));
+        when(categoryRepository.findById(any(UUID.class))).thenReturn(Optional.of(existingCategory));
+        when(productRepository.save(any(ProductEntity.class))).thenReturn(updatedProductEntity);
+        when(productMapper.toProduct(any(ProductEntity.class))).thenReturn(updatedProduct);
+
+        Product result = productService.updateProduct(product.getId(), updatedProduct);
+
+        assertThat(result).isNotNull();
+        assertEquals("Updated Comet Laser", result.getProductName());
+        assertEquals("Updated laser toy description", result.getDescription());
+        assertEquals(35.0, result.getPrice());
+        assertEquals(8, result.getQuantity());
+        assertEquals(existingCategoryId.toString(), result.getCategoryId());
+    }
+
+    @Test
     void testUpdateProductCategoryNotFound() {
         Product updatedProduct = Product.builder()
                 .id(product.getId())
@@ -179,11 +219,6 @@ class ProductServiceTest {
 
         productService.deleteProduct(product.getId());
         assertThat(productService.getAllProducts()).doesNotContain(product);
-    }
-
-    @Test
-    void testDeleteProductNotFound() {
-        assertThrows(PersistenceException.class , () -> productService.deleteProduct(UUID.randomUUID()));
     }
 
     @Test

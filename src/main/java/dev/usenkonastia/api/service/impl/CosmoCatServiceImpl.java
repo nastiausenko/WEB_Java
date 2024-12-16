@@ -54,7 +54,6 @@ public class CosmoCatServiceImpl implements CosmoCatService {
     @Transactional
     public void deleteCat(String email) {
        try {
-           cosmoCatRepository.findByNaturalId(email).orElseThrow(() -> new CatNotFoundException(email));
            cosmoCatRepository.deleteByNaturalId(email);
        } catch (Exception e) {
            throw new PersistenceException(e);

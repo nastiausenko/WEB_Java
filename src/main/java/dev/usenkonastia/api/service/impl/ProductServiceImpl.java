@@ -88,7 +88,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(UUID productId) {
         try {
-            productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
             productRepository.deleteById(productId);
         } catch (Exception e) {
             throw new PersistenceException(e);

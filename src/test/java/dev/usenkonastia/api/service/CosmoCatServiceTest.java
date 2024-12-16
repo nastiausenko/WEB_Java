@@ -99,11 +99,6 @@ public class CosmoCatServiceTest {
     }
 
     @Test
-    void testDeleteCatNotFound() {
-        assertThrows(PersistenceException.class , () -> cosmoCatService.deleteCat(String.valueOf(UUID.randomUUID())));
-    }
-
-    @Test
     void testGetCosmoCats() {
         CosmoCat cosmoCat2 = buildCat("Nebula", "nebula@email.com");
         CosmoCatEntity cosmoCatEntity1 = CosmoCatEntity.builder()
