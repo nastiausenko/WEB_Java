@@ -19,7 +19,7 @@ import java.util.UUID;
 @RestController
 @Validated
 @Tag(name = "Order")
-@RequestMapping("/api/v1/{customerReference}/orders")
+@RequestMapping("/api/v1/orders/{customerReference}")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderMapper orderMapper;

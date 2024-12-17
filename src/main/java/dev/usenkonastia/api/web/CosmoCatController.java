@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class CosmoCatController {
     private final CosmoCatService cosmoCatService;
     private final CosmoCatMapper cosmoCatMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     @FeatureToggle(FeatureToggles.COSMO_CATS)
     public ResponseEntity<CosmoCatListDto> getCosmoCats() {
