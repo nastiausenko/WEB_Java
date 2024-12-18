@@ -95,7 +95,7 @@ public class OrderControllerIT extends AbstractIt {
                 .products(List.of())
                 .totalPrice(123.4)
                 .build();
-        mockMvc.perform(post("/api/v1/orders/any@email.com//{cartId}", UUID.randomUUID().toString())
+        mockMvc.perform(post("/api/v1/orders/any@email.com/{cartId}", UUID.randomUUID().toString())
                         .header(API_KEY_HEADER, "Bearer dummy-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -109,5 +109,19 @@ public class OrderControllerIT extends AbstractIt {
                 .email("sunny@email.com")
                 .build();
         cosmoCatRepository.save(catEntity);
+    }
+
+    @Test
+    void testPlaceOrderUnauthorized() throws Exception {
+        saveCatEntity();
+        placeOrderRequestDto = PlaceOrderRequestDto.builder()
+                .products(List.of())
+                .totalPrice(123.4)
+                .build();
+        mockMvc.perform(post("/api/v1/orders/any@email.com/{cartId}", UUID.randomUUID().toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(placeOrderRequestDto)))
+                .andExpect(status().isUnauthorized());
     }
 }

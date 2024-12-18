@@ -28,6 +28,8 @@ ext {
             "**service/mapper/*OrderMapper.*",
             "**service/mapper/*CategoryMapperImpl.*",
             "**service/mapper/*OrderMapperImpl.*",
+            "**/config/security/AuthConverter.*",
+            "**/config/security/JwtAuthFilter.*"
     ]
 }
 
