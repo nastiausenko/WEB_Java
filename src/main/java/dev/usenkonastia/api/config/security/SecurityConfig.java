@@ -101,8 +101,9 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()).csrfTokenRepository(withHttpOnlyFalse()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers(antMatcher(API_V_1_CUSTOMERS)).authenticated())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(API_V_1_CUSTOMERS).authenticated()
+                )
                 .oauth2ResourceServer(oAuth2 ->
                         oAuth2.bearerTokenResolver(new HeaderBearerTokenResolver(ROLE_CLAIMS_HEADER))
                                 .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
@@ -110,7 +111,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(6)
+    @Order(5)
     public SecurityFilterChain filterChainGreetingV1(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize

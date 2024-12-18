@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -63,6 +64,7 @@ public class CategoryControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void testCreateCategory() throws Exception {
         CategoryDto newCategory = CategoryDto.builder()
                 .categoryName("Earth Vehicles")
@@ -77,6 +79,7 @@ public class CategoryControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void testCreateCategoryFailedValidation() throws Exception {
         CategoryDto newCategory = CategoryDto.builder()
                 .categoryName("Furniture")
@@ -110,6 +113,7 @@ public class CategoryControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void testDeleteCategory() throws Exception {
         saveCategoryEntity();
         mockMvc.perform(delete("/api/v1/category/{id}", categoryId)
@@ -119,6 +123,7 @@ public class CategoryControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void testDeleteCategoryNotFound() throws Exception {
         saveCategoryEntity();
         mockMvc.perform(delete("/api/v1/category/{id}", UUID.randomUUID())

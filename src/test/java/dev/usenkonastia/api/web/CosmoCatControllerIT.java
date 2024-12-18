@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -25,6 +26,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.reset;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,6 +56,7 @@ public class CosmoCatControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     @EnabledFeatureToggle(FeatureToggles.COSMO_CATS)
     void testGetCosmoCats() throws Exception {
         saveCosmoCatEntity();
@@ -70,6 +73,7 @@ public class CosmoCatControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     @DisabledFeatureToggle(FeatureToggles.COSMO_CATS)
     void testDisabledGetCosmoCats() throws Exception {
         saveCosmoCatEntity();
@@ -80,6 +84,7 @@ public class CosmoCatControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser
     void testCreateCat() throws Exception {
         CosmoCatEntryDto newCat = CosmoCatEntryDto.builder()
                 .catName("Nebula")
@@ -87,6 +92,7 @@ public class CosmoCatControllerIT extends AbstractIt {
                 .build();
 
         mockMvc.perform(post("/api/v1/cosmo-cat")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCat)))
@@ -98,6 +104,7 @@ public class CosmoCatControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser
     void testCreateCatFailedValidation() throws Exception {
         CosmoCatEntryDto newCat = CosmoCatEntryDto.builder()
                 .catName("Nebula")
@@ -105,6 +112,7 @@ public class CosmoCatControllerIT extends AbstractIt {
                 .build();
 
         mockMvc.perform(post("/api/v1/cosmo-cat")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCat)))
@@ -114,6 +122,7 @@ public class CosmoCatControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser
     void testGetCatById() throws Exception {
         saveCosmoCatEntity();
         mockMvc.perform(get("/api/v1/cosmo-cat/{email}", "luna@email.com")
@@ -124,6 +133,7 @@ public class CosmoCatControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser
     void testGetCatByIdNotFound() throws Exception {
         saveCosmoCatEntity();
         mockMvc.perform(get("/api/v1/cosmo-cat/{email}", "any@email.com")
@@ -133,9 +143,11 @@ public class CosmoCatControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser
     void testDeleteCat() throws Exception {
         saveCosmoCatEntity();
         mockMvc.perform(delete("/api/v1/cosmo-cat/{email}", "luna@email.com")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
