@@ -35,7 +35,6 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain filterChainProductsV1(HttpSecurity http) throws Exception {
-
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new AuthConverter());
 

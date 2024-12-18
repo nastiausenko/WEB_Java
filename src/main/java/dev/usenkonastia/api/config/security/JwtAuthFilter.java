@@ -24,11 +24,8 @@ import static dev.usenkonastia.api.util.SecurityUtil.API_KEY_HEADER;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final BearerTokenResolver bearerTokenResolver = new HeaderBearerTokenResolver(API_KEY_HEADER);
-
     private final BearerTokenAuthenticationEntryPoint authenticationEntryPoint = new BearerTokenAuthenticationEntryPoint();
-
     private final AuthenticationFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
-
     private final AuthenticationProvider jwtAuthenticationProvider;
 
     public JwtAuthFilter(JwtDecoder jwtDecoder) {
