@@ -1,0 +1,6 @@
+auth:
+  claims:
+    name: Nebula
+    email_verified: true
+    email: starfall@email.com
+

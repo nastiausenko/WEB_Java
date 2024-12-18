@@ -1,0 +1,13 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "n": "oVuDeNMKK-U5ERS-QoqhOidf-nNg4OnOMlNaGh_U2kfAuILJTHknY2z-HLcp68G81D3vN_8DDoNzs0YXbYV-a8IyVxURXhrKbURp6Nn6T-Yq4gIyc137We0XNUgKxZ6HxvBhoglsnFgflquYYtRFYA2GRAdaIG38CL5az-A-Cr-NlJFaKM0o_VR65LOYCy5wWEWbwnvoAWuIGsKf-fQR2Z_47Ra-L4pypG4u85KYJY3p-SJsfELSK-PXtfxWE9OjJA1RY2nS_pnLT0Yx7oEftRvp8qM-A9v0VJMTPQQhuiFlBsZFuvl-RkN4rU9tX1IMfQOIXNMxBHlzjORgfOhQHw",
+      "e": "AQAB",
+      "ext": true,
+      "kid": "galactic-key",
+      "alg": "RS256",
+      "use": "sig"
+    }
+  ]
+}

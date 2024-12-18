@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,12 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class CosmoCatController {
     private final CosmoCatService cosmoCatService;
     private final CosmoCatMapper cosmoCatMapper;
-
-    @GetMapping
-    @FeatureToggle(FeatureToggles.COSMO_CATS)
-    public ResponseEntity<CosmoCatListDto> getCosmoCats() {
-        return ResponseEntity.ok(cosmoCatMapper.toCosmoCatListDto(cosmoCatService.getCosmoCats()));
-    }
 
     @GetMapping("/{email}")
     public ResponseEntity<CosmoCatDto> getCatById(@PathVariable String email) {
@@ -42,5 +37,12 @@ public class CosmoCatController {
     public ResponseEntity<?> deleteCat(@PathVariable String email) {
         cosmoCatService.deleteCat(email);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    @FeatureToggle(FeatureToggles.COSMO_CATS)
+    public ResponseEntity<CosmoCatListDto> getCosmoCats() {
+        return ResponseEntity.ok(cosmoCatMapper.toCosmoCatListDto(cosmoCatService.getCosmoCats()));
     }
 }

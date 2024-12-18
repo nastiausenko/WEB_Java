@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -66,6 +67,7 @@ public class ProductControllerIT extends AbstractIt {
 
     @Test
     @EnabledFeatureToggle(FeatureToggles.KITTY_PRODUCTS)
+    @WithMockUser(roles = "ADMIN")
     void testCreateProduct() throws Exception {
         saveProductEntity();
         ProductDto productDto = ProductDto.builder()
@@ -91,6 +93,7 @@ public class ProductControllerIT extends AbstractIt {
     @ParameterizedTest
     @EnabledFeatureToggle(FeatureToggles.KITTY_PRODUCTS)
     @MethodSource("provideInvalidProductDtos")
+    @WithMockUser(roles = "ADMIN")
     void testCreateProductFailedValidation(ProductDto productDto, String fieldName, String message) throws Exception {
         mockMvc.perform(post("/api/v1/product")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -102,6 +105,7 @@ public class ProductControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     @DisabledFeatureToggle(FeatureToggles.KITTY_PRODUCTS)
     void testDisabledCreateProduct() throws Exception {
         ProductDto productDto = ProductDto.builder()
@@ -151,6 +155,7 @@ public class ProductControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void testUpdateProduct() throws Exception {
         saveProductEntity();
         ProductDto updatedProductDto = buildProductDto("Updated Space Milk", "Updated description", 39.9, 50);
@@ -167,6 +172,7 @@ public class ProductControllerIT extends AbstractIt {
     }
 
     @ParameterizedTest
+    @WithMockUser(roles = "ADMIN")
     @MethodSource("provideInvalidProductDtos")
     void testUpdateProductFailedValidation(ProductDto productDto, String fieldName, String message) throws Exception {
         saveProductEntity();
@@ -180,6 +186,7 @@ public class ProductControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void testUpdateProductNotFound() throws Exception {
         ProductDto updatedProductDto = buildProductDto("Space Product", "This product does not exist", 39.9, 50);
 
@@ -192,6 +199,7 @@ public class ProductControllerIT extends AbstractIt {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void testDeleteProduct() throws Exception {
         saveProductEntity();
         mockMvc.perform(delete("/api/v1/product/{id}", savedProductId)

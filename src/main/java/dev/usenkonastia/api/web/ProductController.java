@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,11 +39,13 @@ public class ProductController {
         return ResponseEntity.ok(productMapper.toProductListDto(productService.getAllProducts()));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/top-selling")
     public ResponseEntity<List<ProductReportProjection>> getTopSellingProducts() {
         return ResponseEntity.ok(productService.getTopSellingProducts());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto) {
@@ -50,12 +53,14 @@ public class ProductController {
         return ResponseEntity.ok(productMapper.toProductDto(productService.createProduct(product)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable UUID id, @Valid @RequestBody ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
         return ResponseEntity.ok(productMapper.toProductDto(productService.updateProduct(id, product)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable UUID id) {
         productService.deleteProduct(id);
